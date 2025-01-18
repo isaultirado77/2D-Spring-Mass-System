@@ -33,7 +33,7 @@ cd 2d_spring_mass_system
 
 3. Ejecuta el script principal:
 ```bash
-python 2d_mass_spring_system.py
+python src/2d_mass_spring_system.py
 ```
 
 ## Parámetros iniciales
