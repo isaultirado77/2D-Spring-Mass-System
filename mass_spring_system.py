@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 class Mass:
     """Represents a mass connected to the spring."""
@@ -56,22 +55,3 @@ class System:
             self.mass.velocity = state[2:]
         return np.array(positions)
 
-# System parameters
-mass = Mass(position=[1.0, 0.0], velocity=[0.0, 2.0], mass=1.0)
-spring = Spring(k=10.0, rest_length=1.0)
-system = System(mass=mass, spring=spring, damping=0.1)
-
-# Simulation
-t_max = 20.0
-dt = 0.01
-positions = system.simulate(t_max, dt)
-
-# Plot results
-plt.figure(figsize=(8, 6))
-plt.plot(positions[:, 0], positions[:, 1], label="Trajectory")
-plt.title("2D Mass-Spring System")
-plt.xlabel("Position X (m)")
-plt.ylabel("Position Y (m)")
-plt.grid()
-plt.legend()
-plt.show()
