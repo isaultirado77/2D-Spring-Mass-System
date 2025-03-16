@@ -45,28 +45,41 @@ class System:
         return state + (dt / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
 
     def simulate(self, t_max, dt):
-        """Run the simulation and saves the data to 'data/simulation_data.dat"""
+        """Run the simulation and save the data to 'data/simulation_data.dat'"""
         steps = int(t_max / dt)
         state = np.array([*self.mass.position, *self.mass.velocity])
         os.makedirs("data", exist_ok=True)
 
-        with open("data/simulation_data.dat", "w") as file: 
-            file.write("# t x y vx vy E_kin E_pot E_total\n")
+        with open("data/simulation_data.dat", "w") as file:
+            file.write("# t x y vx vy E_kin E_pot E_total\n")  # Encabezado correcto
             time = 0.0
-            x, y, vx, vy = state
+            for _ in range(steps):
+                x, y, vx, vy = state
 
-            kinetic_energy = 0.5 * self.mass.mass * (vx**2 + vy**2)
+                kinetic_energy = 0.5 * self.mass.mass * (vx**2 + vy**2)
 
-            # Elastic potencial energy: (1/2) * k * (ΔL)^2
-            displacement = np.linalg.norm(self.mass.position) - self.spring.rest_length
-            potential_energy = 0.5 * self.spring.k * displacement**2
+                # Elastic potential energy: (1/2) * k * (ΔL)^2
+                displacement = np.linalg.norm(self.mass.position) - self.spring.rest_length
+                potential_energy = 0.5 * self.spring.k * displacement**2
 
-            total_energy = kinetic_energy + potential_energy
+                total_energy = kinetic_energy + potential_energy
+                data_str = f"{time:.5f} {x:.5f} {y:.5f} {vx:.5f} {vy:.5f} {kinetic_energy:.5f} {potential_energy:.5f} {total_energy:.5f}\n"
 
-            file.write(f"{time:.5f} {x:.5f} {y:.5f} {vx:.5f} {vy:.5f} {kinetic_energy:.5f} {potential_energy:.5f} {total_energy:.5f}\n")
+                # print(data_str.strip())  # Debugging
+                file.write(data_str)
 
-            # Advance simulation
-            state = self.runge_kutta_step(state, dt)
-            self.mass.position = state[:2]
-            self.mass.velocity = state[2:]
-            time += dt
+                state = self.runge_kutta_step(state, dt)
+                self.mass.position = state[:2]
+                self.mass.velocity = state[2:]
+                time += dt
+
+if __name__ == "__main__": 
+    # System parameters
+    mass = Mass(position=[1.0, 0.0], velocity=[0.0, 2.0], mass=1.0)
+    spring = Spring(k=10.0, rest_length=1.0)
+    system = System(mass=mass, spring=spring, damping=0.1)
+ 
+    # Simulation
+    t_max = 20.0
+    dt = 0.01
+    system.simulate(t_max, dt)
