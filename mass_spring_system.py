@@ -45,12 +45,12 @@ class System:
         return state + (dt / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
 
     def simulate(self, t_max, dt):
-        """Run the simulation and saves the data to 'data/data.dat"""
+        """Run the simulation and saves the data to 'data/simulation_data.dat"""
         steps = int(t_max / dt)
         state = np.array([*self.mass.position, *self.mass.velocity])
         os.makedirs("data", exist_ok=True)
 
-        with open("data/data.dat", "w") as file: 
+        with open("data/simulation_data.dat", "w") as file: 
             file.write("# t x y vx vy E_kin E_pot E_total\n")
             time = 0.0
             x, y, vx, vy = state
