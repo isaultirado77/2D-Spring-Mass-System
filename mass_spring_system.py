@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 class Mass:
     """Represents a mass connected to the spring."""
@@ -44,14 +45,28 @@ class System:
         return state + (dt / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
 
     def simulate(self, t_max, dt):
-        """Runs the simulation and returns the results."""
+        """Run the simulation and saves the data to 'data/data.dat"""
         steps = int(t_max / dt)
         state = np.array([*self.mass.position, *self.mass.velocity])
-        positions = []
-        for _ in range(steps):
-            positions.append(state[:2])
+        os.makedirs("data", exist_ok=True)
+
+        with open("data/data.dat", "w") as file: 
+            file.write("# t x y vx vy E_kin E_pot E_total\n")
+            time = 0.0
+            x, y, vx, vy = state
+
+            kinetic_energy = 0.5 * self.mass.mass * (vx**2 + vy**2)
+
+            # Elastic potencial energy: (1/2) * k * (ΔL)^2
+            displacement = np.linalg.norm(self.mass.position) - self.spring.rest_length
+            potential_energy = 0.5 * self.spring.k * displacement**2
+
+            total_energy = kinetic_energy + potential_energy
+
+            file.write(f"{time:.5f} {x:.5f} {y:.5f} {vx:.5f} {vy:.5f} {kinetic_energy:.5f} {potential_energy:.5f} {total_energy:.5f}\n")
+
+            # Advance simulation
             state = self.runge_kutta_step(state, dt)
             self.mass.position = state[:2]
             self.mass.velocity = state[2:]
-        return np.array(positions)
-
+            time += dt
