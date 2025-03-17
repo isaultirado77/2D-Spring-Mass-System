@@ -2,6 +2,8 @@
 
 Este proyecto simula el comportamiento de un sistema masa-resorte en dos dimensiones utilizando el método de Runge-Kutta de cuarto orden (RK4). 
 La masa está conectada a un resorte ideal, y el sistema incluye un término opcional de amortiguamiento.
+- Script de la simulación: mass_spring_system.py
+- Análisis de la simulación: mass_spring_simulation.ipynb
 
 ## Descripción
 
