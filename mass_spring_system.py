@@ -77,7 +77,7 @@ if __name__ == "__main__":
     # System parameters
     mass = Mass(position=[1.0, 0.0], velocity=[0.0, 2.0], mass=1.0)
     spring = Spring(k=10.0, rest_length=1.0)
-    system = System(mass=mass, spring=spring, damping=0.1)
+    system = System(mass=mass, spring=spring, damping=0)
  
     # Simulation
     t_max = 20.0
