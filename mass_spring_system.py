@@ -1,5 +1,7 @@
 import numpy as np
 import os
+
+
 class Mass:
     """Representa una masa conectada al resorte."""
     def __init__(self, position, velocity, mass):
@@ -43,13 +45,13 @@ class System:
         k4 = self.derivatives(state + dt * k3)
         return state + (dt / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
 
-    def simulate(self, t_max, dt):
-        """Ejecuta la simulación y guarda los datos en 'data/simulation_data.dat'"""
+    def simulate(self, t_max, dt, datapath="data.dat"):
+        """Ejecuta la simulación y guarda los datos en 'data/data.dat'"""
         steps = int(t_max / dt)
         state = np.array([*self.mass.position, *self.mass.velocity])
         os.makedirs("data", exist_ok=True)
 
-        with open("data/simulation_data.dat", "w") as file:
+        with open(f"data/{datapath}", "w") as file:
             file.write("# t x y vx vy E_kin E_pot E_total\n")
             time = 0.0
             for _ in range(steps):
@@ -72,12 +74,13 @@ class System:
                 time += dt
 
 if __name__ == "__main__": 
-    # Parámetros del sistema
-    mass = Mass(position=[1.0, 0.0], velocity=[0.0, 2.0], mass=1.0)
+    # System parameters: 
+    mass = Mass(position=[1.0, 0.0], velocity=[1.0, 2.0], mass=1.0)
     spring = Spring(k=10.0, rest_length=1.0)
-    system = System(mass=mass, spring=spring, damping=0)
- 
-    # Simulación
+    system_damped = System(mass=mass, spring=spring, damping=0.1)
+    system_regular = System(mass=mass, spring=spring, damping=0.0)
+    # Simulation parameters
     t_max = 20.0
     dt = 0.01
-    system.simulate(t_max, dt)
+    system_damped.simulate(t_max, dt, datapath="damped_data.dat")
+    system_regular.simulate(t_max, dt, datapath="regular_data.dat")
